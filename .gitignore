@@ -1,0 +1,9 @@
+.DS_Store
+
+# 编译产物
+App/dsh
+App/dsh.app/
+Assets/make_icon
+
+# 备份文件
+*.bak-*
