@@ -80,6 +80,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
     private var quotaServer: QuotaHTTPServer?
     private var quotaPayload: String = "{}"
     private let quotaPayloadLock = NSLock()
+    private var appearanceObserver: NSKeyValueObservation?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
@@ -89,6 +90,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         startServerIfNeeded()
         setvbuf(stdout, nil, _IONBF, 0)
         startQuotaRefresher()
+        // Follow system light/dark switching for the theme-matched default background.
+        appearanceObserver = NSApp.observe(\.effectiveAppearance, options: [.new]) { [weak self] _, _ in
+            DispatchQueue.main.async { self?.applyThemeDefaultBackground() }
+        }
     }
 
     private func startQuotaRefresher() {
@@ -372,6 +377,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         applyBackground(data: data)
     }
 
+    /// Light mode → color whales (bg-1..3), dark mode → monochrome (bg-4..6).
+    private var isDarkMode: Bool {
+        NSApp.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .darkAqua
+    }
+
+    /// Apply the theme-matched default background, but only when the user has
+    /// not picked a custom one yet (no persisted cache).
+    private func applyThemeDefaultBackground() {
+        if FileManager.default.fileExists(atPath: backgroundCacheURL().path) { return }
+        let n = isDarkMode ? "4" : "1"
+        guard let url = Bundle.main.url(forResource: "bg-\(n)", withExtension: "jpg", subdirectory: "backgrounds"),
+              let data = try? Data(contentsOf: url) else { return }
+        applyBackground(data: data)
+    }
+
     /// Insert `Default Background > 🐋 奶鲸 1 / 2 / 3 …` submenu at the top of `viewMenu`.
     private func installDefaultBackgroundMenu(into viewMenu: NSMenu) {
         let fm = FileManager.default
@@ -381,7 +401,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         if let files = try? fm.contentsOfDirectory(atPath: scanRoot.path) {
             for f in files.sorted() where f.hasPrefix("bg-") && f.hasSuffix(".jpg") {
                 let n = String(f.dropFirst(3).dropLast(4))   // "bg-1.jpg" -> "1"
-                entries.append((n, "🐋 奶鲸 \(n)"))
+                let label = (Int(n) ?? 0) >= 4 ? "🐋 黑白 \(Int(n)! - 3)" : "🐋 奶鲸 \(n)"
+                entries.append((n, label))
             }
         }
         guard !entries.isEmpty else { return }
@@ -459,6 +480,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         // Restore the persisted background once the UI has loaded.
         if let data = try? Data(contentsOf: backgroundCacheURL()), !data.isEmpty {
             applyBackground(data: data)
+        } else {
+            // No user-chosen background yet: pick the theme-matched default
+            // (light → color whales bg-1/2/3, dark → monochrome bg-4/5/6).
+            applyThemeDefaultBackground()
         }
         // Render cached quota rows if available.
         if let rows = lastQuotaRows, !rows.isEmpty {
