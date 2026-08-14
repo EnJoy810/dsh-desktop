@@ -1,6 +1,6 @@
 {
   "name": "dsh-windows",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "DeepSeek Harness desktop app for Windows (Electron)",
   "main": "src/main.js",
   "author": "EnJoy810",
