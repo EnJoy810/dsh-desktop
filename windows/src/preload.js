@@ -1,7 +1,10 @@
-// Preload: currently a no-op bridge placeholder. Kept so contextIsolation stays on
-// and future native bridge calls have a single, audited entry point.
-const { contextBridge } = require('electron')
+// Preload: audited native bridge. contextIsolation stays on; everything the
+// renderer may touch goes through this single, minimal surface.
+const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('dshDesktop', {
-  platform: process.platform
+  platform: process.platform,
+  // settings (settings window)
+  getSettings: () => ipcRenderer.invoke('settings:get'),
+  saveSettings: (patch) => ipcRenderer.invoke('settings:save', patch)
 })

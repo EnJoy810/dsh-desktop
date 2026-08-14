@@ -181,7 +181,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         viewMenu.addItem(withTitle: "Toggle Developer Tools", action: #selector(toggleDevTools(_:)), keyEquivalent: "d")
         viewMenuItem.submenu = viewMenu
         installDefaultBackgroundMenu(into: viewMenu)
-        installAppIconMenu(into: viewMenu)
 
         let windowMenuItem = NSMenuItem()
         mainMenu.addItem(windowMenuItem)
@@ -397,40 +396,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         let header = NSMenuItem(title: "Default Background", action: nil, keyEquivalent: "")
         header.submenu = sub
         viewMenu.insertItem(header, at: 0)
-    }
-
-    /// `App Icon > 🐋 奶鲸 1 / 2 / 3` — switch the Dock icon at runtime.
-    private func installAppIconMenu(into viewMenu: NSMenu) {
-        let sub = NSMenu(title: "App Icon")
-        let def = NSMenuItem(title: "默认图标", action: #selector(appIconSelected(_:)), keyEquivalent: "")
-        def.target = self
-        def.representedObject = "default"
-        sub.addItem(def)
-        let fm = FileManager.default
-        let root = Bundle.main.resourceURL?.appendingPathComponent("backgrounds")
-        if let files = try? fm.contentsOfDirectory(atPath: root!.path) {
-            for f in files.sorted() where f.hasPrefix("bg-") && f.hasSuffix(".jpg") {
-                let n = String(f.dropFirst(3).dropLast(4))
-                let item = NSMenuItem(title: "🐋 奶鲸 \(n)", action: #selector(appIconSelected(_:)), keyEquivalent: "")
-                item.target = self
-                item.representedObject = n
-                sub.addItem(item)
-            }
-        }
-        let header = NSMenuItem(title: "App Icon", action: nil, keyEquivalent: "")
-        header.submenu = sub
-        viewMenu.insertItem(header, at: 1)
-    }
-
-    @objc private func appIconSelected(_ sender: NSMenuItem) {
-        guard let n = sender.representedObject as? String else { return }
-        if n == "default" {
-            NSApp.applicationIconImage = nil
-        } else if let url = Bundle.main.url(forResource: "bg-\(n)", withExtension: "jpg", subdirectory: "backgrounds"),
-                  let img = NSImage(contentsOf: url) {
-            NSApp.applicationIconImage = img
-        }
-        for item in (sender.menu?.items ?? []) { item.state = (item === sender) ? .on : .off }
     }
 
     /// Persist the image and push it to the web view.
