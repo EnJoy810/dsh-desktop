@@ -1,51 +1,28 @@
-# dsh macOS Desktop App
+# dsh-desktop
 
-Native macOS wrapper for DeepSeek Harness web UI (WKWebView, no Electron).
+**DeepSeek Harness 跨平台桌面应用**（macOS + Windows）。
 
-## How it works
+DeepSeek Harness（`@deepseek-ai/dsh`）的桌面壳，支持自定义对话窗口背景、磨砂玻璃侧边栏、页面缩放快捷键。
 
-- App launch → probes `http://127.0.0.1:3080` → if nothing is serving, spawns
-  `node <npx-cache>/@deepseek-ai/dsh/lib/bin.js web --port 3080` as a child
-  process (deliberately avoids `npx -y` so a patched local bundle is reused)
-- Loads the UI in an embedded WKWebView window
-- App quit → child server process is terminated (port released)
+## 平台目录
 
-## Files
+| 目录 | 平台 | 技术栈 | 说明 |
+|------|------|--------|------|
+| [`macos/`](macos/) | macOS | Swift + WKWebView | 原生应用，内嵌默认背景，`View > Change Background…`（⌘B）换背景 |
+| [`windows/`](windows/) | Windows | Electron 33+ | 便携版：内置 dsh 运行时（`ELECTRON_RUN_AS_NODE`），无需安装 Node.js |
 
-```
-Sources/main.swift        app: window, menu, process lifecycle, port probe
-Sources/make_icon.swift   icon renderer (AppKit, one-off)
-App/Info.plist            bundle manifest (ad-hoc signed, local-only)
-App/dsh.app               built bundle
-```
+## 打包产物
 
-## Rebuild
+- **macOS**：`macos/App/DeepSeek Harness.dmg`（`hdiutil` 制作，ad-hoc 签名）
+- **Windows**：`windows/dist/DeepSeek Harness Setup *.exe`（NSIS 安装程序）
 
-```sh
-swiftc -O -o App/dsh Sources/main.swift -framework Cocoa -framework WebKit
-mkdir -p App/dsh.app/Contents/MacOS App/dsh.app/Contents/Resources
-cp App/dsh App/dsh.app/Contents/MacOS/
-cp App/Info.plist App/dsh.app/Contents/Info.plist
-# regenerate icon if changed:
-swiftc -O -o Assets/make_icon Sources/make_icon.swift -framework AppKit
-./Assets/make_icon Assets/icon.iconset/icon_1024x1024.png && iconutil -c icns Assets/icon.iconset -o App/dsh.app/Contents/Resources/AppIcon.icns
-codesign --force --sign - App/dsh.app
-```
+发布在 GitHub Releases：<https://github.com/EnJoy810/dsh-desktop/releases>
 
-## Install
+## 功能
 
-```sh
-cp -R App/dsh.app ~/Applications/
-open ~/Applications/dsh.app
-```
+- 自定义对话窗口背景（macOS：⌘B / Windows：Ctrl+B），选任意图片即时生效
+- 背景持久化：macOS `~/Library/Application Support/DeepSeek/background.jpg`；Windows `%APPDATA%/DeepSeek Harness/background.jpg`，重启自动恢复
+- 磨砂玻璃侧边栏（backdrop-filter）
+- 页面缩放：macOS ⌘+/⌘-/⌘0；Windows Ctrl+/Ctrl-/Ctrl0
 
-## Notes / trade-offs
-
-- Ad-hoc signature only; Gatekeeper may warn on machines without the local
-  build. Re-sign on each machine (or `xattr -dr com.apple.quarantine`).
-- WKWebView has no devtools; View → Toggle Developer Tools opens the page in
-  the default browser instead.
-- If another process already serves port 3080, the app just attaches to it.
-- Server uses the cached `@deepseek-ai/dsh` bundle in `~/.npm/_npx`; if npx
-  re-downloads (cache cleared), a patched `dsh-llm-pi-ai` would be lost —
-  rebuild the bundle before launching.
+详见各平台目录内 README。

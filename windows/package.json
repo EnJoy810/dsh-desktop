@@ -1,0 +1,57 @@
+{
+  "name": "dsh-windows",
+  "version": "1.0.0",
+  "description": "DeepSeek Harness desktop app for Windows (Electron)",
+  "main": "src/main.js",
+  "author": "EnJoy810",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:dir": "electron-builder --win dir"
+  },
+  "devDependencies": {
+    "electron": "^37.10.3",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.enjoy.dsh",
+    "productName": "DeepSeek Harness",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/node_modules",
+        "to": "vendor/node_modules"
+      },
+      {
+        "from": "vendor/dsh-config",
+        "to": "vendor/dsh-config"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "DeepSeek Harness"
+    }
+  }
+}

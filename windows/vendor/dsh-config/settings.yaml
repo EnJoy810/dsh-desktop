@@ -1,0 +1,64 @@
+llm-pi-ai:
+  providers:
+    sensenova:
+      displayName: SenseNova
+      apiKeyEnv: SENSENOVA_API_KEY
+      api: openai-completions
+      baseURL: https://token.sensenova.cn/v1
+      models:
+        - id: deepseek-v4-flash
+          name: DeepSeek V4 Flash
+          contextWindow: 1048576
+          maxTokens: 65536
+          compat:
+            thinkingFormat: deepseek
+            supportsDeveloperRole: false
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+            xhigh: xhigh
+        - id: sensenova-6.7-flash-lite
+          name: SenseNova 6.7 Flash Lite
+          contextWindow: 262144
+          maxTokens: 65536
+          input: [ text, image ]
+          compat:
+            supportsDeveloperRole: false
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+        - id: sensenova-6.8-flash-lite
+          name: SenseNova 6.8 Flash Lite
+          contextWindow: 262144
+          maxTokens: 65536
+          input: [ text, image ]
+          compat:
+            supportsDeveloperRole: false
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+        - id: glm-5.2
+          name: GLM 5.2
+          contextWindow: 1048576
+          maxTokens: 131072
+          compat:
+            supportsDeveloperRole: false
+          reasoningEfforts:
+            off: none
+            low: low
+            medium: medium
+            high: high
+agent-default-model:
+  provider: sensenova
+  model: sensenova-6.8-flash-lite
+  reasoningEffort: high
+ui-onboarding:
+  welcomeNoticeVersion: 2026-08-13.1
+ui-theme:
+  preference: light
