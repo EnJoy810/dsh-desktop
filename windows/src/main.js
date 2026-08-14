@@ -233,7 +233,7 @@ function injectBackgroundCSS() {
 
   window.__setBackground = function(dataURI) {
     var st = getOr('dsh-bg-custom');
-    st.textContent = 'body::before { content:"" !important; position:fixed !important; left:0 !important; top:0 !important; width:100vw !important; height:100vh !important; z-index:-1 !important; pointer-events:none !important; background:url("' + dataURI + '") center / contain no-repeat fixed !important; }';
+    st.textContent = 'body::before { content:"" !important; position:fixed !important; left:0 !important; top:0 !important; width:100vw !important; height:100vh !important; z-index:-1 !important; pointer-events:none !important; background:url("' + dataURI + '") center / cover no-repeat fixed !important; }';
   };
   window.__resetBackground = function() {
     var st = document.getElementById('dsh-bg-custom');
@@ -268,6 +268,11 @@ function buildMenu() {
     {
       label: 'View',
       submenu: [
+        ...listDefaultBackgrounds().map((e) => ({
+          label: `Default Background > 🐋 奶鲸 ${e.n}`,
+          click: () => setDefaultBackground(e.n)
+        })),
+        { type: 'separator' },
         {
           label: 'Change Background…',
           accelerator: 'Ctrl+B',
@@ -332,6 +337,29 @@ function resetBackground() {
       'window.__resetBackground && window.__resetBackground();'
     ).catch(() => {})
   }
+}
+
+function listDefaultBackgrounds() {
+  const dir = path.join(process.resourcesPath, 'vendor', 'backgrounds')
+  try {
+    return fs.readdirSync(dir)
+      .filter((f) => /^bg-\d+\.jpg$/.test(f))
+      .sort()
+      .map((f) => ({ n: f.replace(/^bg-(\d+)\.jpg$/, '$1'), file: path.join(dir, f) }))
+  } catch {
+    return []
+  }
+}
+
+function setDefaultBackground(n) {
+  const entry = listDefaultBackgrounds().find((e) => e.n === n)
+  if (!entry) return
+  let data
+  try { data = fs.readFileSync(entry.file) } catch { return }
+  try {
+    fs.writeFileSync(backgroundCachePath(), data)
+  } catch {}
+  applyBackgroundToWindow(data, true)
 }
 
 // ---- lifecycle ----

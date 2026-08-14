@@ -33,6 +33,10 @@
       {
         "from": "vendor/dsh-config",
         "to": "vendor/dsh-config"
+      },
+      {
+        "from": "vendor/backgrounds",
+        "to": "vendor/backgrounds"
       }
     ],
     "win": {
