@@ -98,9 +98,18 @@ curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3080   # 期望 200
 | 操作 | macOS | Windows |
 |------|-------|---------|
 | 更换背景 | `⌘B`（View → Change Background…） | `Ctrl+B` |
+| **选择默认背景** | `View → Default Background → 🐋 奶鲸 1 / 2 / 3` | `View → Default Background → 🐋 奶鲸 1 / 2 / 3` |
 | 恢复默认背景 | View → Reset Background | View → Reset Background |
 | 页面缩放 | `⌘+` / `⌘-` / `⌘0` | `Ctrl+`=` / `Ctrl+-` / `Ctrl+0` |
 | 重新加载 | `⌘R` | `Ctrl+R` |
+
+### 🎨 内置默认背景（多选）
+
+应用内置三张精选背景（`assets/backgrounds/`），可在菜单中一键选择并持久化：
+
+| 奶鲸 1（扁平卡通） | 奶鲸 2（3D 胖鲸） | 奶鲸 3（3D + Deepseek logo） |
+|:---:|:---:|:---:|
+| ![bg-1](assets/backgrounds/bg-1.jpg) | ![bg-2](assets/backgrounds/bg-2.jpg) | ![bg-3](assets/backgrounds/bg-3.jpg) |
 
 背景缓存：macOS `~/Library/Application Support/DeepSeek/background.jpg`；Windows `%APPDATA%/DeepSeek Harness/background.jpg`。
 

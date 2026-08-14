@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>DeepSeek</string>
+	<string>DeepSeek Harness</string>
 	<key>CFBundleDisplayName</key>
-	<string>DeepSeek</string>
+	<string>DeepSeek Harness</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.deepseek-ai.dsh.desktop</string>
 	<key>CFBundleVersion</key>
