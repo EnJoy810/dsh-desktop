@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/screenshot.jpg" alt="DeepSeek Harness 桌面版" width="720">
+  <img src="docs/cover.jpg" alt="DeepSeek Harness 桌面版" width="720">
 </p>
 
 <h1 align="center">DeepSeek Harness Desktop</h1>
