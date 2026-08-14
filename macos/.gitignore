@@ -7,3 +7,6 @@ Assets/make_icon
 
 # 备份文件
 *.bak-*
+
+# 打包产物
+*.dmg
