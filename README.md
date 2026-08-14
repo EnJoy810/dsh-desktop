@@ -5,91 +5,147 @@
 <h1 align="center">DeepSeek Harness Desktop</h1>
 
 <p align="center">
-  <b>DeepSeek Harness 跨平台桌面客户端（macOS + Windows）</b><br>
-  自定义对话背景 · 磨砂玻璃侧边栏 · 一键换肤
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows-blue?style=flat-square">
-  <img src="https://img.shields.io/github/v/release/EnJoy810/dsh-desktop?style=flat-square&label=release">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square">
-  <img src="https://img.shields.io/badge/macOS-Swift%20%2F%20WKWebView-orange?style=flat-square">
-  <img src="https://img.shields.io/badge/Windows-Electron%2037-9cf?style=flat-square">
+  DeepSeek Harness 跨平台桌面客户端（macOS + Windows）· 自定义背景 · 磨砂侧边栏 · 开箱即用
 </p>
 
 ---
 
-## 这是什么
+> **面向 AI Agent**：本 README 同时供人类阅读与 AI 直接执行。如果你是 AI，请按「快速部署」中的步骤逐条执行，每步都有命令、预期结果与失败处理。目标：从零到可用（下载 → 安装 → 配置 API → 启动验证）一站式完成。
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness)（`@deepseek-ai/dsh`）套一层原生桌面壳，把网页变成真正的桌面应用：对话窗口铺满你选的背景图，侧边栏是磨砂玻璃质感，支持页面缩放，开箱即用。
+---
 
-- **macOS**：Swift + WKWebView 原生实现，轻量无依赖
-- **Windows**：Electron 便携版，内置完整 dsh 运行时，**无需安装 Node.js**
+## 1. 项目身份
 
-## ✨ 功能
+| 项 | 值 |
+|----|----|
+| 项目 | DeepSeek Harness 桌面客户端（`@deepseek-ai/dsh` 的桌面壳） |
+| 仓库 | https://github.com/EnJoy810/dsh-desktop |
+| 平台 | macOS（Swift + WKWebView）、Windows（Electron 便携） |
+| 安装包 | GitHub Releases：https://github.com/EnJoy810/dsh-desktop/releases |
+| 默认 LLM | 商汤 SenseNova 免费 DeepSeek 模型（`deepseek-v4-flash`） |
 
-- 🖼️ **自定义对话背景**：任意图片铺满对话窗口，即选即换
-- 🧊 **磨砂玻璃侧边栏**：毛玻璃质感，半透明透出背景
-- 🐋 **默认奶鲸壁纸**：内置精选背景，开箱即美
-- 🔍 **页面缩放**：`⌘+/⌘-/⌘0`（macOS）、`Ctrl+/Ctrl-/Ctrl0`（Windows）
-- 💾 **背景持久化**：重启自动恢复上次选择的背景
-- 🛡️ **启动自愈**：自动拉起 dsh 服务，失败时给出可诊断的错误页与日志
+## 2. 前置条件
 
-## 🚀 快速开始
-
-| 平台 | 安装包 | 说明 |
-|------|--------|------|
-| macOS | `DeepSeek.Harness.dmg` | 双击挂载，拖入「应用程序」 |
-| Windows | `DeepSeek.Harness.Setup.*.exe` | 双击运行 NSIS 安装向导 |
-
-从 [Releases](https://github.com/EnJoy810/dsh-desktop/releases) 下载对应安装包，双击安装即可。
-
-> **首次运行提示**：安装包未做代码签名，macOS 首次打开需「右键 → 打开」，Windows 的 SmartScreen 需点「更多信息 → 仍要运行」。
-
-## 🔑 配置 DeepSeek API（免费）
-
-应用内置 [SenseNova（商汤日日新）](https://platform.sensenova.cn) Provider，可直接使用其公测免费的 DeepSeek 模型（`deepseek-v4-flash`），全程免绑卡：
-
-1. 打开 [platform.sensenova.cn](https://platform.sensenova.cn)，用手机号注册并登录
-2. 进入「控制台」→「API Key 管理」，点击「创建 API Key」并复制生成的 `sk-` 开头密钥（**只显示一次**，请立即保存）
-3. 将密钥提供给应用，二选一：
-   - **设置环境变量**（推荐，跨平台通用）：
-     ```bash
-     # macOS / Linux
-     export SENSENOVA_API_KEY="sk-你的密钥"   # 建议写入 ~/.zshrc
-     # Windows（PowerShell）
-     setx SENSENOVA_API_KEY "sk-你的密钥"     # 设置后需重启应用
-     ```
-   - **编辑配置文件**：首次运行后生成的 `~/.dsh/settings.yaml` 中，`llm-pi-ai.providers.sensenova.apiKeyEnv` 即引用该环境变量，保持默认即可
-
-> **免费模型一览**：`deepseek-v4-flash`（高性能对话 / 思考模式）、`sensenova-6.7-flash-lite`（轻量多模态）、`sensenova-u1-fast`（内容生成）。接口兼容 OpenAI 格式（`https://token.sensenova.cn/v1`），免费额度每 5 小时刷新，具体配额以平台控制台为准。
-
-## 📖 使用说明
-
-**更换背景**：菜单 `View → Change Background…`（macOS `⌘B` / Windows `Ctrl+B`），选择任意图片立即生效；`View → Reset Background` 恢复默认。
-
-**背景缓存位置**：
-
-| 平台 | 路径 |
+| 平台 | 要求 |
 |------|------|
-| macOS | `~/Library/Application Support/DeepSeek/background.jpg` |
-| Windows | `%APPDATA%/DeepSeek Harness/background.jpg` |
+| macOS | macOS 12+；**需要 Node.js 22+**（dsh 依赖 `node:zlib.createZstdDecompress` / `node:module.stripTypeScriptTypes`） |
+| Windows | Windows 10/11 x64；**无需 Node.js**（内置便携运行时） |
 
-## 📁 仓库结构
+## 3. 快速部署（AI 请逐步执行）
+
+### 3.1 下载安装包
+
+```bash
+# 从 GitHub Releases 获取最新版（两条命令任选，用 gh 更省事）
+LATEST=$(gh release view --repo EnJoy810/dsh-desktop --json assets -q '.assets[] | select(.name|test("dmg$")) | .browser_download_url' 2>/dev/null)
+echo "$LATEST"
+```
+
+- **macOS**：下载 `DeepSeek.Harness.dmg` → `hdiutil attach` → 将 `DeepSeek.app` 复制到 `/Applications` → `hdiutil detach`。
+- **Windows**：下载 `DeepSeek.Harness.Setup.*.exe` → 双击运行 NSIS 安装向导（可自定义安装目录）。
+
+> **未签名提示（首次运行必处理）**：
+> - macOS：`sudo xattr -rd com.apple.quarantine /Applications/DeepSeek.app`（或右键 → 打开）
+> - Windows：SmartScreen 提示时点「更多信息 → 仍要运行」
+
+### 3.2 配置 DeepSeek API（免费，必须）
+
+应用内置 SenseNova Provider，模型 `deepseek-v4-flash` 公测免费。步骤如下：
+
+1. **注册**：打开 https://platform.sensenova.cn → 手机号注册并登录（公测免费、免绑卡）。
+2. **创建 API Key**：控制台 → API Key 管理 → 创建 API Key → 复制 `sk-` 开头的密钥（**只显示一次**，立即保存）。
+3. **设置环境变量**：
+
+```bash
+# macOS / Linux（写入 shell 配置使其永久生效）
+echo 'export SENSENOVA_API_KEY="sk-你的密钥"' >> ~/.zshrc && source ~/.zshrc
+# 或临时生效
+export SENSENOVA_API_KEY="sk-你的密钥"
+
+# Windows（PowerShell，设置后需重启应用）
+setx SENSENOVA_API_KEY "sk-你的密钥"
+```
+
+4. **验证环境变量**：
+
+```bash
+# macOS / Linux
+echo $SENSENOVA_API_KEY | head -c 8   # 期望输出 sk- 开头
+# Windows
+echo %SENSENOVA_API_KEY%
+```
+
+> 应用首次运行会自动生成 `~/.dsh/settings.yaml`（含 SenseNova Provider 配置，引用 `SENSENOVA_API_KEY`），无需手动编辑。
+
+### 3.3 启动与验证
+
+```bash
+# 启动应用（macOS 双击 DeepSeek.app；Windows 双击快捷方式）
+# 应用会自动：探测 3080 端口 → 无服务则拉起内置 dsh web → 加载对话界面
+
+# 验证 1：dsh web 服务在跑
+curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3080   # 期望 200
+
+# 验证 2：在对话窗口发送任意消息，确认模型正常回复（验证 API Key 已生效）
+```
+
+**验证失败排查**：
+- 端口非 200 → 查看日志：macOS 终端直接看；Windows 看 `%APPDATA%/DeepSeek Harness/dsh-server.log`（启动失败时窗口也会显示错误页）。
+- 模型回复报鉴权错误 → 检查 `SENSENOVA_API_KEY` 是否正确设置（步骤 3.2）。
+
+## 4. 日常使用
+
+| 操作 | macOS | Windows |
+|------|-------|---------|
+| 更换背景 | `⌘B`（View → Change Background…） | `Ctrl+B` |
+| 恢复默认背景 | View → Reset Background | View → Reset Background |
+| 页面缩放 | `⌘+` / `⌘-` / `⌘0` | `Ctrl+`=` / `Ctrl+-` / `Ctrl+0` |
+| 重新加载 | `⌘R` | `Ctrl+R` |
+
+背景缓存：macOS `~/Library/Application Support/DeepSeek/background.jpg`；Windows `%APPDATA%/DeepSeek Harness/background.jpg`。
+
+## 5. 故障排查（AI 排查指引）
+
+| 症状 | 原因 | 处理 |
+|------|------|------|
+| 窗口白屏 / 空白 | dsh 服务未启动 | 读日志定位：Windows `%APPDATA%/DeepSeek Harness/dsh-server.log`；macOS 用 `log show --predicate 'process == "dsh"'` |
+| 启动报 Node 相关错误 | macOS 缺 Node 22+ | `node -v` 检查，装 v22+（如 nvm） |
+| 模型报鉴权 / 401 | API Key 未配置 | 重做 3.2，确认环境变量可见 |
+| 端口 3080 被占用 | 已有 dsh 实例 | 直接复用（应用会自动探测）；或 `lsof -ti:3080 \| xargs kill` 后重启 |
+| 未签名警告 | 无开发者证书 | 按 3.1「未签名提示」处理 |
+
+## 6. 从源码构建（开发者 / AI 可复现）
+
+### macOS
+
+```sh
+cd macos
+swiftc -O -o App/dsh Sources/main.swift -framework Cocoa -framework WebKit
+mkdir -p App/dsh.app/Contents/MacOS App/dsh.app/Contents/Resources
+cp App/dsh App/dsh.app/Contents/MacOS/
+cp App/Info.plist App/dsh.app/Contents/Info.plist
+codesign --force --sign - App/dsh.app
+hdiutil create -volname "DeepSeek Harness" -srcfolder App/dsh.app -ov -format UDZO "App/DeepSeek Harness.dmg"
+```
+
+### Windows
+
+```bash
+cd windows
+npm install
+npm start          # 开发运行
+npm run dist       # 打包 NSIS 安装程序（需 Electron ≥ 37，勿降级）
+```
+
+## 7. 仓库结构
 
 ```
 dsh-desktop/
-├── macos/      # macOS 版（Swift + WKWebView），详见 macos/README.md
-└── windows/    # Windows 版（Electron 便携），详见 windows/README.md
+├── macos/      # Swift + WKWebView 实现（含构建脚本）
+├── windows/    # Electron 便携实现（含 vendor 同步说明）
+└── docs/       # 封面图等资源
 ```
 
-## 🔧 从源码构建
-
-面向开发者。各平台的构建步骤见对应目录 README：
-
-- macOS：`swiftc` 编译 + `hdiutil` 制作 dmg → [macos/README.md](macos/README.md)
-- Windows：`npm run dist` 打包 NSIS 安装程序 → [windows/README.md](windows/README.md)
-
-## 📄 许可证
+## 8. 许可证
 
 [MIT](LICENSE)
