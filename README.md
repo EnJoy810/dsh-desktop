@@ -46,6 +46,24 @@
 
 > **首次运行提示**：安装包未做代码签名，macOS 首次打开需「右键 → 打开」，Windows 的 SmartScreen 需点「更多信息 → 仍要运行」。
 
+## 🔑 配置 DeepSeek API（免费）
+
+应用内置 [SenseNova（商汤日日新）](https://platform.sensenova.cn) Provider，可直接使用其公测免费的 DeepSeek 模型（`deepseek-v4-flash`），全程免绑卡：
+
+1. 打开 [platform.sensenova.cn](https://platform.sensenova.cn)，用手机号注册并登录
+2. 进入「控制台」→「API Key 管理」，点击「创建 API Key」并复制生成的 `sk-` 开头密钥（**只显示一次**，请立即保存）
+3. 将密钥提供给应用，二选一：
+   - **设置环境变量**（推荐，跨平台通用）：
+     ```bash
+     # macOS / Linux
+     export SENSENOVA_API_KEY="sk-你的密钥"   # 建议写入 ~/.zshrc
+     # Windows（PowerShell）
+     setx SENSENOVA_API_KEY "sk-你的密钥"     # 设置后需重启应用
+     ```
+   - **编辑配置文件**：首次运行后生成的 `~/.dsh/settings.yaml` 中，`llm-pi-ai.providers.sensenova.apiKeyEnv` 即引用该环境变量，保持默认即可
+
+> **免费模型一览**：`deepseek-v4-flash`（高性能对话 / 思考模式）、`sensenova-6.7-flash-lite`（轻量多模态）、`sensenova-u1-fast`（内容生成）。接口兼容 OpenAI 格式（`https://token.sensenova.cn/v1`），免费额度每 5 小时刷新，具体配额以平台控制台为准。
+
 ## 📖 使用说明
 
 **更换背景**：菜单 `View → Change Background…`（macOS `⌘B` / Windows `Ctrl+B`），选择任意图片立即生效；`View → Reset Background` 恢复默认。

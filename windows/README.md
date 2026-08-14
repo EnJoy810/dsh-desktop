@@ -26,6 +26,15 @@ DeepSeek Harness 的 Windows 桌面客户端。
 
 > **启动失败诊断**：server 日志写入 `%APPDATA%/DeepSeek Harness/dsh-server.log`；启动失败时窗口会显示错误页并附日志路径。
 
+## 配置 DeepSeek API（免费）
+
+应用默认使用商汤 SenseNova 平台的免费 DeepSeek 模型（`deepseek-v4-flash`）。首次使用需配置 API Key：
+
+1. 前往 [platform.sensenova.cn](https://platform.sensenova.cn) 手机号注册，在「控制台 → API Key 管理」创建 Key（`sk-` 开头，**只显示一次**）
+2. 设置环境变量（PowerShell）：`setx SENSENOVA_API_KEY "sk-你的密钥"`，设置后重启应用
+
+详见根目录 [README](../README.md#-配置-deepseek-api免费)。
+
 ## 从源码构建
 
 ```bash

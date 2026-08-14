@@ -22,6 +22,15 @@ DeepSeek Harness 的 macOS 原生桌面客户端。
 
 背景缓存在 `~/Library/Application Support/DeepSeek/background.jpg`，重启自动恢复。
 
+## 配置 DeepSeek API（免费）
+
+应用默认使用商汤 SenseNova 平台的免费 DeepSeek 模型（`deepseek-v4-flash`）。首次使用需配置 API Key：
+
+1. 前往 [platform.sensenova.cn](https://platform.sensenova.cn) 手机号注册，在「控制台 → API Key 管理」创建 Key（`sk-` 开头，**只显示一次**）
+2. 设置环境变量：`export SENSENOVA_API_KEY="sk-你的密钥"`（建议写入 `~/.zshrc`）
+
+详见根目录 [README](../README.md#-配置-deepseek-api免费)。
+
 ## 从源码构建
 
 ```sh
