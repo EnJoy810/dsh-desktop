@@ -233,7 +233,7 @@ function injectBackgroundCSS() {
 
   window.__setBackground = function(dataURI) {
     var st = getOr('dsh-bg-custom');
-    st.textContent = 'body::before { content:"" !important; position:fixed !important; left:0 !important; top:0 !important; width:100vw !important; height:100vh !important; z-index:-1 !important; pointer-events:none !important; background:url("' + dataURI + '") center / cover no-repeat fixed !important; }';
+    st.textContent = 'body::before { content:"" !important; position:fixed !important; left:0 !important; top:0 !important; width:100vw !important; height:100vh !important; z-index:-1 !important; pointer-events:none !important; background:url("' + dataURI + '") center / contain no-repeat fixed !important; }';
   };
   window.__resetBackground = function() {
     var st = document.getElementById('dsh-bg-custom');
