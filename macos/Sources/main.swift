@@ -180,6 +180,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         viewMenu.addItem(withTitle: "Reload", action: #selector(reloadPage(_:)), keyEquivalent: "r")
         viewMenu.addItem(withTitle: "Toggle Developer Tools", action: #selector(toggleDevTools(_:)), keyEquivalent: "d")
         viewMenuItem.submenu = viewMenu
+        installDefaultBackgroundMenu(into: viewMenu)
 
         let windowMenuItem = NSMenuItem()
         mainMenu.addItem(windowMenuItem)
@@ -358,6 +359,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate {
         try? FileManager.default.removeItem(at: backgroundCacheURL())
         let js = "if (window.__resetBackground) window.__resetBackground();"
         webView.evaluateJavaScript(js, completionHandler: nil)
+    }
+
+    /// Pick one of the bundled default backgrounds (in `Contents/Resources/backgrounds/`).
+    @objc private func setDefaultBackground(_ sender: NSMenuItem) {
+        guard let n = sender.representedObject as? String,
+              let url = Bundle.main.url(forResource: "bg-\(n)", withExtension: "jpg", subdirectory: "backgrounds"),
+              let data = try? Data(contentsOf: url) else {
+            NSLog("[dsh] default bg \(sender.representedObject ?? "?") not found in bundle")
+            return
+        }
+        applyBackground(data: data)
+    }
+
+    /// Insert `Default Background > 🐋 奶鲸 1 / 2 / 3 …` submenu at the top of `viewMenu`.
+    private func installDefaultBackgroundMenu(into viewMenu: NSMenu) {
+        let fm = FileManager.default
+        let resourceRoot = Bundle.main.resourceURL?.appendingPathComponent("backgrounds")
+        let scanRoot = resourceRoot ?? Bundle.main.bundleURL.appendingPathComponent("Contents/Resources/backgrounds")
+        var entries: [(String, String)] = []
+        if let files = try? fm.contentsOfDirectory(atPath: scanRoot.path) {
+            for f in files.sorted() where f.hasPrefix("bg-") && f.hasSuffix(".jpg") {
+                let n = String(f.dropFirst(3).dropLast(4))   // "bg-1.jpg" -> "1"
+                entries.append((n, "🐋 奶鲸 \(n)"))
+            }
+        }
+        guard !entries.isEmpty else { return }
+
+        let sub = NSMenu(title: "Default Background")
+        for (n, label) in entries {
+            let item = NSMenuItem(title: label, action: #selector(setDefaultBackground(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = n
+            sub.addItem(item)
+        }
+        let header = NSMenuItem(title: "Default Background", action: nil, keyEquivalent: "")
+        header.submenu = sub
+        viewMenu.insertItem(header, at: 0)
     }
 
     /// Persist the image and push it to the web view.
